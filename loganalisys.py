@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import psycopg2
 import os
 
@@ -14,7 +15,14 @@ class DBCursor:
 
     def __enter__(self):
 
-        self.connection = psycopg2.connect("dbname=news")
+        try:
+            self.connection = psycopg2.connect("dbname=news")
+        except psycopg2.Error as e:
+            print("Unable to connect to the database")
+            print(e.pgerror)
+            print(e.diag.message_detail)
+            sys.exit(1)
+
         self.cursor = self.connection.cursor()
         return self.cursor
 
